@@ -7,7 +7,9 @@ CALL apoc.help('relationship');
 
 CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/bahnsen.json") 
 YIELD value 
+
 UNWIND value.collection.metadata AS metadata 
 UNWIND value.collection.item AS item
+
 WITH item.manifestation as manifestation 
 MERGE (m:MANIFESTATION {manifestid: coalesce(manifestation.idManifestation, "Ausgabe nicht bestimmbar"), system:coalesce(manifestation.systemManifestation, "Ausgabe nicht bestimmbar")}) RETURN m;
