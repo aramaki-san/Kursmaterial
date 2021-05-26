@@ -97,3 +97,15 @@ RETURN {nodes:nodes, links:rel};
 
 MATCH path=(p)-[r1:Adressat]->()<-[r2:Verfasser]-(p2) WHERE p.name <> "Kippenberg, Anton" AND p2.name <>  "Kippenberg, Anton" 
 RETURN p, type(r1) , count(type(r1)), p2, type(r2), count (type(r2));
+
+MATCH (p)-[r1:Adressat]->()<-[r2:Verfasser]-(p2) WITH DISTINCT p AS pers, p2 CALL apoc.create.vRelationship (pers, "Absender / Adressat", {}, p2) YIELD rel RETURN pers, p2, rel LIMIT 100;
+
+MATCH path=(p)-[r1:Adressat]->()<-[r2:Verfasser]-(p2) WHERE p.name <> "Kippenberg, Anton" AND p2.name <>  "Kippenberg, Anton" 
+RETURN p, type(r1) , count(type(r1)), p2, type(r2), count (type(r2));
+MATCH (p)-[r1:Adressat]->()<-[r2:Verfasser]-(p2) 
+WITH DISTINCT p AS pers, p2 
+CALL apoc.create.vRelationship (pers, "Absender / Adressat", {}, p2) YIELD rel MATCH path=(pers)-[rel]-(p2)
+UNWIND nodes(path) as n
+UNWIND relationships(path) AS r
+WITH Collect (distinct n) AS nl, Collect (distinct r) AS rl RETURN {nodes:nl, links:rl};
+
