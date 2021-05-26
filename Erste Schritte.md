@@ -61,12 +61,16 @@ mit
 ```
 CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/bahnsen.json") 
 YIELD value 
-WITH value.collection.item AS item
+UNWIND value.collection.item AS item
 RETURN item;
 ```
 verglichen werden.
 
+An dieser Stelle nochmal einige Hinweise zu den Besonderheiten des ```Merge``` -Befehls. MERGE kombiniert im Grunde ```MATCH``` und ```CREATE```, d.h. es wird überprüft, ob ein entsprechender Knoten bereits existiert. Wenn nicht, wird ein neuer angelegt, wenn doch wird einfach auf den existierenden Knoten gematcht. Um Fehlermeldungen zu vermeiden, muss daher sichergestellt sein, dass alle angegebenen properties in jedem item vorhanden sind, z.B. jedes item einen titleCat hat und jede Person eine gnd. Wenn nicht dann führt dies zu einem Fehler, denn eine property in einem ```MERGE```-Befehl darf niemals null sein. Eine Möglichkeit damit umzugehen (bspw. bei Personen) ist ```coalesce ()```. In Klammern können verschiedene Variablen oder auch Strings angegeben werden und es wird so lange probiert, bis der erste Wert auftritt, welcher nicht null ist. Der Befehl ```apoc.create.relationship``` dient dem Zweck Relationship-types dynamisch zu vergeben. Zwischen ```MERGE``` und ```MATCH``` sowie ```MERGE``` und ```CALL``` muss in der Regel ```WITH``` kommen. Dabei ist wieder zu beachten, welche Variablen von oben weiter unten nochmals auftreten können oder sollen.
 
+In dem Beispiel-Skript werden Knoten für Katalogeinträge (Record) Personen, Orte und Manifestationen angelegt. Theoretisch sind aber noch weitere Knoten denkbar (z.B. für languages, publishers oder genres). Diese dürfen gerne testweise versucht werden, sie selbst noch in das Skript zu implementieren. Direkt am Anfang werden gleich auch die Pfade für Personen und Orte mit ```UNWIND``` definiert. Dies ist kein Problem (da nicht ```WITH```) und macht das Ganze etwas übersichtlicher.
+
+```
 CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/bahnsen.json") 
 YIELD value 
 UNWIND value.collection.metadata AS metadata
@@ -87,13 +91,14 @@ MERGE (r)-[:isReferencedBy {page: item.pageCat, number:item.numberCat}]->(cat)
 WITH g, r, p, person,m 
 CALL apoc.create.relationship (p, person.role, {}, r) YIELD rel
 RETURN r, p, g, m;
+```
+
 
 CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/sturm.json") 
 YIELD value 
 UNWIND value.collection.metadata AS metadata 
 MERGE (c:COLLECTION {title: metadata.heading})
 MERGE (cat:OBJECT {title: metadata.title, date:metadata.year, digitalRepresentation: metadata.base})
-SET cat.type=["Buch", "Katalog"] 
 MERGE (p:PERSON {name: metadata.owner, gnd:metadata.ownerGND})
 MERGE (i:INSTITUTION {name: metadata.institution})
 MERGE (c)-[:isReferencedBy]->(cat)
