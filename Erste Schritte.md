@@ -19,7 +19,7 @@ MATCH
 ```
 Zum Importieren sind zudem noch die Befehle ``` UNWIND ``` und ``` WITH ``` wichtig zu unterscheiden. 
 
-#Beispiel-Import der mit Libreto erschlossenen Bibliothek Benedikt Bahnsen
+## Beispiel-Import der mit Libreto erschlossenen Bibliothek Benedikt Bahnsen
 
 Um ein JSON Dokument zu importieren wird apoc.load.json aufgerufen und der Link angegeben. Alternativ kann das Dokument auch in das Import-Verzeichnis von neo4j kopiert werden. Dann müssen jedoch noch die Einstellungen in der config-Datei angepasst werden, um auch aus dem lokalen Verzeichnis importieren zu können. Das Dokument wird dann der Variable value zugeordnet, die zugleich als root-Knoten fungiert. Über ``` RETURN value ``` kann das Dokument angezeigt werden.
 ```
@@ -33,8 +33,11 @@ Von hier aus, kann der Pfad abwärts bis zu dem gewünschten JSON-Element angege
 UNWIND value.collection.metadata AS metadata 
 RETURN metadata;
 ```
- Von hier aus können jetzt die unter metadata enthaltenen Elemente in Knoten und Kanten transformiert werden. Alle Schritte gehen jetzt von metadata als neuem Startpunkt aus
+Von hier aus können jetzt die unter metadata enthaltenen Elemente in Knoten und Kanten transformiert werden. Alle Schritte gehen jetzt von metadata als neuem Startpunkt aus. 
 
+```
+CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/bahnsen.json") 
+YIELD value 
 MERGE (c:COLLECTION {title: metadata.title})
 MERGE (cat:OBJECT {title: metadata.title, date:metadata.year, digitalRepresentation: metadata.base})
 MERGE (p:PERSON {name: metadata.owner, gnd:metadata.ownerGND})
@@ -45,9 +48,23 @@ MERGE (p)-[:bestandsbildner]->(c)
 MERGE (i)-[:bestandshaltendeInstitution {signatur: metadata.shelfmark}]->(cat)
 MERGE (g)-[:erscheinungsort]->(cat)
 RETURN c, cat, p, i, g; 
+```
 
+Als nächster Schritt kann alle unter item erschlossenen Katalogeinträge der Bibliotheksrekonstruktion transformiert werden. Wichtig ist, dass in diesem Fall zwingend UNWIND und nicht WITH verwendet wird, da das item Array in einzelne Abschnitte zerlegt werden muss. Zum besseren Verständnis kann einmal das Ergebnis der Befehle 
+```
+CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/bahnsen.json") 
+YIELD value 
 WITH value.collection.item AS item
 RETURN item;
+```
+mit 
+```
+CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/bahnsen.json") 
+YIELD value 
+WITH value.collection.item AS item
+RETURN item;
+```
+verglichen werden.
 
 
 CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/bahnsen.json") 
@@ -69,7 +86,7 @@ MATCH (cat:OBJECT {title: metadata.title})
 MERGE (r)-[:isReferencedBy {page: item.pageCat, number:item.numberCat}]->(cat)
 WITH g, r, p, person,m 
 CALL apoc.create.relationship (p, person.role, {}, r) YIELD rel
-RETURN r, p, g, m LIMIT 100;
+RETURN r, p, g, m;
 
 CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/sturm.json") 
 YIELD value 
