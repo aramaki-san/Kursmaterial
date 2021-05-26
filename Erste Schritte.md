@@ -2,14 +2,22 @@ Zum Überprüfen welche Procedures und Functions zur Verfügung stehen, bzw. tes
 ```
 CALL dbms.procedures();
 ```
-Hilfe und Dokumentation
+Weitere Hilfe zur einzelnen Procedures können über apoc.help abgerufen werden. In Klammern kann dabei das gewünschte Anwendungsgebiet angegeben werden.
+```
 CALL apoc.help('text');
 CALL apoc.help('relationship');
+```
+Weitere Hilfestellungen und Dokumentationen können über :help abgerufen werden.
 
+Die Zentralen CYPHER Befehle zum Erzeugen, Bearbeiten und Löschen der Nodes und Relationships sind:
+```
 CREATE
-MATCH
+MERGE
 SET
 DELETE
+MATCH
+```
+Zum Importieren sind zudem noch die Befehle ``` UNWIND ``` und ``` WITH ``` wichtig zu unterscheiden.
 
 CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/bahnsen.json") 
 YIELD value 
