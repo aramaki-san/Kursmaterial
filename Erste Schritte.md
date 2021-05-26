@@ -1,6 +1,7 @@
-Überprüfen ob Plugins installiert und verfügbar sind
+Zum Überprüfen welche Procedures und Functions zur Verfügung stehen, bzw. testen ob APOC oder GDS-Plugins richtig installiert sind. In diesem Fall sollten Procedures mit dem Präfix apoc. oder gds. in der Liste zur Verfügung stehen
+```
 CALL dbms.procedures();
-
+```
 Hilfe und Dokumentation
 CALL apoc.help('text');
 CALL apoc.help('relationship');
