@@ -93,7 +93,8 @@ CALL apoc.create.relationship (p, person.role, {}, r) YIELD rel
 RETURN r, p, g, m;
 ```
 
-
+Hier noch ein ähnliches Skript für das Libreto-Projekt zur Bibliothek von Johann Christoph Sturm. Die Libreto Projekte unterscheiden sich oft in kleinen Details was wie erschlossen wird, daher kann zwar in der Regel das gleich Skript verwendet werden, einige Anpassungen sind aber meist doch notwendig. 
+```
 CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/sturm.json") 
 YIELD value 
 UNWIND value.collection.metadata AS metadata 
@@ -105,7 +106,8 @@ MERGE (c)-[:isReferencedBy]->(cat)
 MERGE (p)-[:bestandsbildner]->(c)
 MERGE (i)-[:bestandshaltendeInstitution {signatur: metadata.shelfmark}]->(cat)
 RETURN c, cat, p, i; 
-
+```
+```
 CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/sturm.json") 
 YIELD value 
 UNWIND value.collection.metadata AS metadata
@@ -125,15 +127,25 @@ MATCH (cat:OBJECT {title: metadata.title})
 MERGE (r)-[:isReferencedBy {page: item.pageCat, number:item.numberCat}]->(cat)
 WITH g, r, p, person,m 
 CALL apoc.create.relationship (p, person.role, {}, r) YIELD rel
-RETURN r, p, g, m LIMIT 100;
+RETURN r, p, g, m;
+```
+## Abfragen und Datentransformation
 
-MATCH p=(c1:OBJECT)-[]-(r1:RECORD)-[]-(g:GEOGNAME)-[]-(r2:RECORD)-[]-(c2:OBJECT) WHERE id(c1)=4841 AND id(c2)=4636 RETURN p;
+Sind die beiden Libreto-JSONs importiert können die Bestände abgefragt werden, z.B. danach ob es Orte gibt, die in beiden Sammlungen / Bibliotheken vorkommen. Die Kette an Knoten und Relationships wird hier in der Variable p gespeichert, welche sozusagen den Pfad als Ergebnis ausliefert, welcher die abgefragte Bedingung erfüllt. Mit id(c1) und id(c2) muss die ID des Knotens, welcher während des metadata-Imports angelegt wurde, noch eingefügt werden. Diese lässt sich einfach (solange nur der Bahnsen- und Sturm-Katalog in der Datenbank sind) schnell über ```MATCH (c:OBJECT) RETURN c;``` abfragen. Dann auf die Knoten klicken und unten sollte die ID angezeigt werden.
 
-MATCH p=(c1:OBJECT)-[]-(r1:RECORD)-[]-(g:GEOGNAME)-[]-(r2:RECORD)-[]-(c2:OBJECT) WHERE id(c1)=4841 AND id(c2)=4636 UNWIND nodes(p) as n
+```
+MATCH p=(c1:OBJECT)-[]-(r1:RECORD)-[]-(g:GEOGNAME)-[]-(r2:RECORD)-[]-(c2:OBJECT) WHERE id(c1)=$ AND id(c2)=$ RETURN p;
+```
+
+MATCH p=(c1:OBJECT)-[]-(r1:RECORD)-[]-(g:GEOGNAME)-[]-(r2:RECORD)-[]-(c2:OBJECT) WHERE id(c1)=4841 AND id(c2)=4636 
+UNWIND nodes(p) as n
 WITH p, collect(distinct n) as nodes
 UNWIND relationships(p) AS r
 WITH nodes, collect(distinct r) AS rel
 RETURN {nodes:nodes, links:rel};
+
+
+
 
 MATCH path=(p)-[r1:Adressat]->()<-[r2:Verfasser]-(p2) WHERE p.name <> "Kippenberg, Anton" AND p2.name <>  "Kippenberg, Anton" 
 RETURN p, type(r1) , count(type(r1)), p2, type(r2), count (type(r2));
