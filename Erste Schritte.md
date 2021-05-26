@@ -7,7 +7,7 @@ Weitere Hilfe zur einzelnen Procedures können über apoc.help abgerufen werden.
 CALL apoc.help('text');
 CALL apoc.help('relationship');
 ```
-Weitere Hilfestellungen und Dokumentationen können über :help abgerufen werden.
+Weitere Hilfestellungen und Dokumentationen können über ```:help``` abgerufen werden.
 
 Die Zentralen CYPHER Befehle zum Erzeugen, Bearbeiten und Löschen der Nodes und Relationships sind:
 ```
@@ -38,6 +38,7 @@ Von hier aus können jetzt die unter metadata enthaltenen Elemente in Knoten und
 ```
 CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/bahnsen.json") 
 YIELD value 
+UNWIND value.collection.metadata AS metadata 
 MERGE (c:COLLECTION {title: metadata.title})
 MERGE (cat:OBJECT {title: metadata.title, date:metadata.year, digitalRepresentation: metadata.base})
 MERGE (p:PERSON {name: metadata.owner, gnd:metadata.ownerGND})
@@ -137,27 +138,65 @@ Sind die beiden Libreto-JSONs importiert können die Bestände abgefragt werden,
 MATCH p=(c1:OBJECT)-[]-(r1:RECORD)-[]-(g:GEOGNAME)-[]-(r2:RECORD)-[]-(c2:OBJECT) WHERE id(c1)=$ AND id(c2)=$ RETURN p;
 ```
 
-MATCH p=(c1:OBJECT)-[]-(r1:RECORD)-[]-(g:GEOGNAME)-[]-(r2:RECORD)-[]-(c2:OBJECT) WHERE id(c1)=4841 AND id(c2)=4636 
+Für einen Export und/oder zur Visualisierung wäre es aber vielleicht schön ein strukturiertes JSON-Dokument nach dem Schema 
+
+``` 
+{"nodes": 
+    [hier kommen alle Knoten rein], 
+ "links":
+    [und hier alle relationships mit Start- und Endpunkt]
+}
+``` 
+zu haben. 
+
+Hierfür können wir mit ```UNWIND``` und ```WITH``` Knoten des Pfades p sozusagen "einsammeln". Mit ```collect(distinct n)``` wird sichergestellt, dass alle Knoten und Relationships nur einmal mit aufgeführt werden.
+
+```
+MATCH p=(c1:OBJECT)-[]-(r1:RECORD)-[]-(g:GEOGNAME)-[]-(r2:RECORD)-[]-(c2:OBJECT) WHERE id(c1)=$ AND id(c2)=$ 
 UNWIND nodes(p) as n
 WITH p, collect(distinct n) as nodes
 UNWIND relationships(p) AS r
 WITH nodes, collect(distinct r) AS rel
 RETURN {nodes:nodes, links:rel};
+```
 
+## Beispiel Inselverlagsarchiv Marbach - Kippenbergarchiv
 
+Im Repositorium findet sich auch ein "längeres" Skript zum Import der EAD-Datei über das Inselverlagsarchiv-Kippenberg aus dem DLA Marbach. EAD ist ein Export-Format, welches vor allem in Archiven Anwendung findet und sich u.a. durch eine extrem verschachtelte Struktur auszeichnet. Das Vorgehen zum Import richtet sich im Prinzip nach den gleichen Richtlinien wie der Libreto-Import und wurde wo nötig an die Anforderungen von EAD angepasst. Zur leichteren Fehlersuche wurde der Import in viele kleine Einzelschritte heruntergebrochen.
 
-
-MATCH path=(p)-[r1:Adressat]->()<-[r2:Verfasser]-(p2) WHERE p.name <> "Kippenberg, Anton" AND p2.name <>  "Kippenberg, Anton" 
+Nach dem Import können folgende Abfragen einmal testweise ausprobiert werden.
+```
+MATCH path=(p)-[r1:Adressat]->()<-[r2:Verfasser]-(p2)
 RETURN p, type(r1) , count(type(r1)), p2, type(r2), count (type(r2));
+```
+Sucht nach Personen die in einem Adressat-Verfasser-Verhältnis über einen Zwischenknoten miteinander verbunden sind. () in der Mitte ist die Möglichkeit einfach irgendeinen Knoten unabhängig von Label oder Properties für die Abfrage zu definieren. Mit ```type(r)``` wird das Label der Relationship ausgegeben ```count(type(r))``` wird gezählt wie oft die angegebenen Personen miteinander verbunden sind (mehrere Verbindungen sind möglich, da beide Personen in verschiedenen im Bestand erschlossenen Briefkonvoluten auftreten können)
 
-MATCH (p)-[r1:Adressat]->()<-[r2:Verfasser]-(p2) WITH DISTINCT p AS pers, p2 CALL apoc.create.vRelationship (pers, "Absender / Adressat", {}, p2) YIELD rel RETURN pers, p2, rel LIMIT 100;
 
-MATCH path=(p)-[r1:Adressat]->()<-[r2:Verfasser]-(p2) WHERE p.name <> "Kippenberg, Anton" AND p2.name <>  "Kippenberg, Anton" 
-RETURN p, type(r1) , count(type(r1)), p2, type(r2), count (type(r2));
+```
 MATCH (p)-[r1:Adressat]->()<-[r2:Verfasser]-(p2) 
 WITH DISTINCT p AS pers, p2 
-CALL apoc.create.vRelationship (pers, "Absender / Adressat", {}, p2) YIELD rel MATCH path=(pers)-[rel]-(p2)
+CALL apoc.create.vRelationship (pers, "Absender / Adressat", {}, p2) YIELD rel 
+RETURN pers, p2, rel LIMIT 100;
+```
+Ausgehen von der gleichen Abfrage wird mit ```apoc.creat.vRelationship``` eine virtuelle Relation zwischen den Personen angelegt mit dem Label "Absender / Adressat". Diese Relation existiert nur als Ergebnis dieser einen Abfrage und wird nicht permanent in der Datenbank gespeichert. So lässt sich Zwischenschritt über einen Knoten vermeiden und man erhält eine direkte Verbindung zwischen den Personen erzielt. ```WITH DISTINCT``` sorgt dafür, dass Duplikate ausgesondert werden, jede Person also genau einmal mit einer anderen Person verbunden sein sollte.
+Virtuelle Relationen sowie virtuelle Knoten haben immer eine negative ID. Aktuell werden für solche Relationen und Knoten noch nicht alle Möglichkeiten von apoc und dem GDS-Plugin zur Netzwerkanalyse unterstützt, das heißt man kann sie leider noch nur begrenzt weiterverarbeiten. Es ist aber sehr wahrscheinlich, dass spätere Versionen von neo4j hier noch neue Funktionen anbieten werden.
+
+```
+MATCH (p)-[r1:Adressat]->()<-[r2:Verfasser]-(p2) 
+WITH DISTINCT p AS pers, p2 
+CALL apoc.create.vRelationship (pers, "Absender / Adressat", {}, p2) YIELD rel 
+MATCH path=(pers)-[rel]-(p2)
 UNWIND nodes(path) as n
 UNWIND relationships(path) AS r
 WITH Collect (distinct n) AS nl, Collect (distinct r) AS rl RETURN {nodes:nl, links:rl};
+```
+Hier wird wieder ein JSON-Objekt mit nodes- und links-array generiert indem die eben erschaffene virtuelle Relation jetzt als Bestandteil einer weiteren Abfrage genutzt wird. So ließe sich aus Bestandsdaten mit Briefhandschriften ein soziales Netzwerk aus Adressaten, Absendern oder in den Briefen erwähten Personen generieren und exportieren.
 
+## Reader zum Seminarteil
+### Einführung zu Graphen und Netzwerken
+
+### RDF und Labeled Property Graph
+
+### Datenbanken
+
+### Anwendungsbeispiele
