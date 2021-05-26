@@ -17,21 +17,26 @@ SET
 DELETE
 MATCH
 ```
-Zum Importieren sind zudem noch die Befehle ``` UNWIND ``` und ``` WITH ``` wichtig zu unterscheiden.
+Zum Importieren sind zudem noch die Befehle ``` UNWIND ``` und ``` WITH ``` wichtig zu unterscheiden. 
 
+#Beispiel-Import der mit Libreto erschlossenen Bibliothek Benedikt Bahnsen
+
+Um ein JSON Dokument zu importieren wird apoc.load.json aufgerufen und der Link angegeben. Alternativ kann das Dokument auch in das Import-Verzeichnis von neo4j kopiert werden. Dann müssen jedoch noch die Einstellungen in der config-Datei angepasst werden, um auch aus dem lokalen Verzeichnis importieren zu können. Das Dokument wird dann der Variable value zugeordnet, die zugleich als root-Knoten fungiert. Über ``` RETURN value ``` kann das Dokument angezeigt werden.
+```
 CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/bahnsen.json") 
 YIELD value 
 RETURN value;
+```
+Von hier aus, kann der Pfad abwärts bis zu dem gewünschten JSON-Element angegeben werden. Hier wird das metadata-Element ausgewählt und in einer gleichnamigen (es können aber auch andere Namen vergeben werden) gespeichert. So können weitere Schritte direkt von dieser Variable aus geschehen. 
 
-WITH value.collection.metadata AS metadata 
+```
+UNWIND value.collection.metadata AS metadata 
 RETURN metadata;
-
-WITH value.collection.item AS item
-RETURN item;
+```
+ Von hier aus können jetzt die unter metadata enthaltenen Elemente in Knoten und Kanten transformiert werden. Alle Schritte gehen jetzt von metadata als neuem Startpunkt aus
 
 MERGE (c:COLLECTION {title: metadata.title})
 MERGE (cat:OBJECT {title: metadata.title, date:metadata.year, digitalRepresentation: metadata.base})
-SET cat.type=["Buch", "Katalog"] 
 MERGE (p:PERSON {name: metadata.owner, gnd:metadata.ownerGND})
 MERGE (i:INSTITUTION {name: metadata.institution})
 MERGE (g:GEOGNAME {name: metadata.placeCat})
@@ -40,6 +45,10 @@ MERGE (p)-[:bestandsbildner]->(c)
 MERGE (i)-[:bestandshaltendeInstitution {signatur: metadata.shelfmark}]->(cat)
 MERGE (g)-[:erscheinungsort]->(cat)
 RETURN c, cat, p, i, g; 
+
+WITH value.collection.item AS item
+RETURN item;
+
 
 CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/bahnsen.json") 
 YIELD value 
