@@ -1,4 +1,4 @@
-CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json?token=ARZYUG3CX65UVGBJ6PWOYTDAXI73A") 
+CALL apoc.load.json (https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json") 
 YIELD value 
 UNWIND value.ead AS ead 
 UNWIND ead.archdesc AS archdesc
@@ -17,7 +17,7 @@ CALL apoc.merge.relationship (cc, corpname.role,{ },{ },c)YIELD rel AS rel3
 RETURN ci, cp , cc, c, bib;
 
 	
-	CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json?token=ARZYUG3CX65UVGBJ6PWOYTDAXI73A") 
+	CALL apoc.load.json (https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json")
 	YIELD value 
 	UNWIND value.ead AS ead 
 	UNWIND ead.archdesc AS archdesc
@@ -36,7 +36,7 @@ RETURN ci, cp , cc, c, bib;
 	MERGE (ci)-[:Bestandshaltende_Institution]->(r)
 	RETURN ci, c, r;
 	
-	CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json?token=ARZYUG3CX65UVGBJ6PWOYTDAXI73A") 
+	CALL apoc.load.json (https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json")
 	YIELD value 
 	UNWIND value.ead AS ead 
 	UNWIND ead.archdesc AS archdesc
@@ -49,7 +49,7 @@ RETURN ci, cp , cc, c, bib;
 	CALL apoc.merge.relationship (r, geo.role, { }, { },o)YIELD rel
 	RETURN r, o;
 
-	CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json?token=ARZYUG3CX65UVGBJ6PWOYTDAXI73A") 
+	CALL apoc.load.json (https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json") 
 	YIELD value 
 	UNWIND value.ead AS ead 
 	UNWIND ead.archdesc AS archdesc
@@ -62,7 +62,7 @@ RETURN ci, cp , cc, c, bib;
 	CALL apoc.merge.relationship (p, persname.role, { }, { },r)YIELD rel
 	RETURN p, r;
 
-	CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json?token=ARZYUG3CX65UVGBJ6PWOYTDAXI73A") 
+	CALL apoc.load.json (https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json") 
 	YIELD value 
 	UNWIND value.ead AS ead 
 	UNWIND ead.archdesc AS archdesc
@@ -75,7 +75,7 @@ RETURN ci, cp , cc, c, bib;
 	CALL apoc.merge.relationship (i, corpname.role, { },{ }, r)YIELD rel
 	RETURN r, i;
 
-	CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json?token=ARZYUG3CX65UVGBJ6PWOYTDAXI73A") 
+	CALL apoc.load.json (https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json")
 	YIELD value 
 	UNWIND value.ead AS ead 
 	UNWIND ead.archdesc AS archdesc
@@ -89,7 +89,7 @@ RETURN ci, cp , cc, c, bib;
 	RETURN r, p;
 	
 
-		CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json?token=ARZYUG3CX65UVGBJ6PWOYTDAXI73A") 
+		CALL apoc.load.json (https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json") 	
 		YIELD value 
 		UNWIND value.ead AS ead 
 		UNWIND ead.archdesc AS archdesc
@@ -114,13 +114,13 @@ RETURN ci, cp , cc, c, bib;
 		MERGE (ci)-[:Bestandshaltende_Institution]->(rr2)
 		RETURN r, rr2, c, ci;
 
-		CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json?token=ARZYUG3CX65UVGBJ6PWOYTDAXI73A") 
+		CALL apoc.load.json (https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json") 
 		YIELD value 
 		UNWIND value.ead AS ead 
 		UNWIND ead.archdesc AS archdesc
 		UNWIND archdesc.dsc.c AS level1
 		UNWIND level1.c AS level2
-    UNWIND level2.controlaccess AS ctrl
+    		UNWIND level2.controlaccess AS ctrl
 		UNWIND ctrl.geogname AS geog
 		MATCH (r:Resource {id:level2.id, title:level2.did.unittitle.`#text`, level:level2.level})
 		MERGE (l:Location {name:geog.`#text`})
@@ -129,11 +129,13 @@ RETURN ci, cp , cc, c, bib;
 		RETURN r, l;
 
 		
-		CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/Kippenberg.json") YIELD value UNWIND value.ead AS ead 
+		CALL apoc.load.json (https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json") 
+		YIELD value 
+		UNWIND value.ead AS ead 
 		UNWIND ead.archdesc AS archdesc
 		UNWIND archdesc.dsc.c AS level1
 		UNWIND level1.c AS level2
-    UNWIND level2.controlaccess AS ctrl
+   		UNWIND level2.controlaccess AS ctrl
 		UNWIND ctrl.persname AS persname
 		MATCH (r:Resource {id:level2.id, title:level2.did.unittitle.`#text`, level:level2.level})
 		MERGE (p:Person {name:persname.normal, gnd:coalesce (persname.authfilenumber, "")})
@@ -141,11 +143,13 @@ RETURN ci, cp , cc, c, bib;
 		CALL apoc.merge.relationship (p, coalesce (persname.role, 'Bezugsperson'), { },{ },r)YIELD rel
 		RETURN r, p;
 
-		CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/Kippenberg.json") YIELD value UNWIND value.ead AS ead 
+		CALL apoc.load.json (https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/Kippenberg.json") 
+		YIELD value 
+		UNWIND value.ead AS ead 
 		UNWIND ead.archdesc AS archdesc
 		UNWIND archdesc.dsc.c AS level1
 		UNWIND level1.c AS level2
-    UNWIND level2.controlaccess AS ctrl
+    		UNWIND level2.controlaccess AS ctrl
 		UNWIND ctrl.corpname AS corpname
 		MATCH (r:Resource {id:level2.id, title:level2.did.unittitle.`#text`, level:level2.level})
 		MERGE (c:Institution {name:corpname.normal, gnd:coalesce (corpname.authfilenumber, "")})
