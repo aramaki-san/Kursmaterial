@@ -164,7 +164,8 @@ RETURN {nodes:nodes, links:rel};
 
 ## Beispiel Inselverlagsarchiv Marbach - Kippenbergarchiv
 
-Im Repositorium findet sich auch ein "längeres" Skript zum Import der EAD-Datei über das Inselverlagsarchiv-Kippenberg aus dem DLA Marbach. EAD ist ein Export-Format, welches vor allem in Archiven Anwendung findet und sich u.a. durch eine extrem verschachtelte Struktur auszeichnet. Das Vorgehen zum Import richtet sich im Prinzip nach den gleichen Richtlinien wie der Libreto-Import und wurde wo nötig an die Anforderungen von EAD angepasst. Zur leichteren Fehlersuche wurde der Import in viele kleine Einzelschritte heruntergebrochen.
+Im Repositorium findet sich auch ein "kleines" Skript zum Import der EAD-Datei über das Inselverlagsarchiv-Kippenberg aus dem DLA Marbach. Beim Test lief es ohne Fehlermeldung durch. Es ist aber hier sicherlich noch einiges Optimierungspotential drin. Bei diesem wie natürlich auch bei den anderen hier vorgestellten Imports und Abfragen, gilt, dass diese keinesfalls als bereits ideale Lösungen zu sehen sind, sondern den aktuellen Arbeitsstand im Projekt bzw. das Ergebnis eigener kleiner Tests darstellen. Es darf also gerne nach Verbesserungspotential ausschau gehalten werden:-)
+EAD ist ein Export-Format, welches vor allem in Archiven Anwendung findet und sich u.a. durch eine extrem verschachtelte Struktur auszeichnet. Das Vorgehen zum Import richtet sich im Prinzip nach den gleichen Richtlinien wie der Libreto-Import und wurde wo nötig an die Anforderungen von EAD angepasst. Zur leichteren Fehlersuche wurde der Import in viele kleine Einzelschritte heruntergebrochen.
 
 Nach dem Import können folgende Abfragen einmal testweise ausprobiert werden.
 ```
