@@ -25,7 +25,7 @@ Zum Importieren sind zudem noch die Befehle ``` UNWIND ``` und ``` WITH ``` wich
 
 Um ein JSON Dokument zu importieren wird apoc.load.json aufgerufen und der Link angegeben. Alternativ kann das Dokument auch in das Import-Verzeichnis von neo4j kopiert werden. Dann müssen jedoch noch die Einstellungen in der config-Datei angepasst werden, um auch aus dem lokalen Verzeichnis importieren zu können. Das Dokument wird dann der Variable value zugeordnet, die zugleich als root-Knoten fungiert. Über ``` RETURN value ``` kann das Dokument angezeigt werden.
 ```
-CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/bahnsen.json?token=ARZYUG24CN56YRWXTSPYER3AXI7JC") 
+CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/bahnsen.json") 
 YIELD value 
 RETURN value;
 ```
@@ -38,7 +38,7 @@ RETURN metadata;
 Von hier aus können jetzt die unter metadata enthaltenen Elemente in Knoten und Kanten transformiert werden. Alle Schritte gehen jetzt von metadata als neuem Startpunkt aus. 
 
 ```
-CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/bahnsen.json?token=ARZYUG24CN56YRWXTSPYER3AXI7JC") 
+CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/bahnsen.json") 
 YIELD value 
 UNWIND value.collection.metadata AS metadata 
 MERGE (c:COLLECTION {title: metadata.title})
@@ -55,14 +55,14 @@ RETURN c, cat, p, i, g;
 
 Als nächster Schritt kann alle unter item erschlossenen Katalogeinträge der Bibliotheksrekonstruktion transformiert werden. Wichtig ist, dass in diesem Fall zwingend UNWIND und nicht WITH verwendet wird, da das item Array in einzelne Abschnitte zerlegt werden muss. Zum besseren Verständnis kann einmal das Ergebnis der Befehle 
 ```
-CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/bahnsen.json?token=ARZYUG24CN56YRWXTSPYER3AXI7JC") 
+CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/bahnsen.json") 
 YIELD value 
 WITH value.collection.item AS item
 RETURN item;
 ```
 mit 
 ```
-CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/bahnsen.json?token=ARZYUG24CN56YRWXTSPYER3AXI7JC") 
+CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/bahnsen.json") 
 YIELD value 
 UNWIND value.collection.item AS item
 RETURN item;
@@ -74,7 +74,7 @@ An dieser Stelle nochmal einige Hinweise zu den Besonderheiten des ```Merge``` -
 In dem Beispiel-Skript werden Knoten für Katalogeinträge (Record) Personen, Orte und Manifestationen angelegt. Theoretisch sind aber noch weitere Knoten denkbar (z.B. für languages, publishers oder genres). Diese dürfen gerne testweise versucht werden, sie selbst noch in das Skript zu implementieren. Direkt am Anfang werden gleich auch die Pfade für Personen und Orte mit ```UNWIND``` definiert. Dies ist kein Problem (da nicht ```WITH```) und macht das Ganze etwas übersichtlicher.
 
 ```
-CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/bahnsen.json?token=ARZYUG24CN56YRWXTSPYER3AXI7JC") 
+CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/bahnsen.json") 
 YIELD value 
 UNWIND value.collection.metadata AS metadata
 UNWIND value.collection.item AS item
@@ -98,7 +98,7 @@ RETURN r, p, g, m;
 
 Hier noch ein ähnliches Skript für das Libreto-Projekt zur Bibliothek von Johann Christoph Sturm. Die Libreto Projekte unterscheiden sich oft in kleinen Details was wie erschlossen wird, daher kann zwar in der Regel das gleich Skript verwendet werden, einige Anpassungen sind aber meist doch notwendig. 
 ```
-CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/sturm.json?token=ARZYUG4RIKAOAXEXTLZKGFTAXI7X2") 
+CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/sturm.json") 
 YIELD value 
 UNWIND value.collection.metadata AS metadata 
 MERGE (c:COLLECTION {title: metadata.heading})
@@ -111,7 +111,7 @@ MERGE (i)-[:bestandshaltendeInstitution {signatur: metadata.shelfmark}]->(cat)
 RETURN c, cat, p, i; 
 ```
 ```
-CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/sturm.json?token=ARZYUG4RIKAOAXEXTLZKGFTAXI7X2") 
+CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/sturm.json") 
 YIELD value 
 UNWIND value.collection.metadata AS metadata
 UNWIND value.collection.item AS item
