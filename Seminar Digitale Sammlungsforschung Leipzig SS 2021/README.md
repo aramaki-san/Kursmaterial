@@ -98,7 +98,7 @@ RETURN r, p, g, m;
 
 Hier noch ein ähnliches Skript für das Libreto-Projekt zur Bibliothek von Johann Christoph Sturm. Die Libreto Projekte unterscheiden sich oft in kleinen Details was wie erschlossen wird, daher kann zwar in der Regel das gleich Skript verwendet werden, einige Anpassungen sind aber meist doch notwendig. 
 ```
-CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/sturm.json") 
+CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/sturm.json?token=ARZYUG4RIKAOAXEXTLZKGFTAXI7X2") 
 YIELD value 
 UNWIND value.collection.metadata AS metadata 
 MERGE (c:COLLECTION {title: metadata.heading})
@@ -111,7 +111,7 @@ MERGE (i)-[:bestandshaltendeInstitution {signatur: metadata.shelfmark}]->(cat)
 RETURN c, cat, p, i; 
 ```
 ```
-CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/import/main/sturm.json") 
+CALL apoc.load.json ("https://raw.githubusercontent.com/aramaki-san/Kursmaterial/main/Seminar%20Digitale%20Sammlungsforschung%20Leipzig%20SS%202021/sturm.json?token=ARZYUG4RIKAOAXEXTLZKGFTAXI7X2") 
 YIELD value 
 UNWIND value.collection.metadata AS metadata
 UNWIND value.collection.item AS item
