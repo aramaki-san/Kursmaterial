@@ -198,14 +198,19 @@ Hier wird wieder ein JSON-Objekt mit nodes- und links-array generiert indem die 
 ### Einführung zu Graphen und Netzwerken
 
 Jannidis et al. (Hrsg.): *Digital Humanities. Eine Einführung*, Stuttgart 2021. (Hier Kapitel 10 "Netzwerke" S. 141-161)
+
 Needham, Mark / Hodler, Amy E.: *Graph algorithms - practical examples in Apache Spark and Neo4j*, Boston u.a. 2019. (Hier Kapitel 2 "Graph Theory and Concepts" S. 15-28)
+
 Kuczera, Andreas: *Graphentechnologien in den Geisteswissenschaften*, https://kuczera.github.io/Graphentechnologien/contents/ (gleichzeitig auch eine schöne Einführung zur Anwendung von neo4j)
 
 ### RDF und Labeled Property Graph
 
 Jannidis et al. (Hrsg.): *Digital Humanities. Eine Einführung*, Stuttgart 2021. (Hier Kapitel 11 "Ontologien" S. 162-176)
+
 Sakr et al. (Hrsg.): *Linked Data. Storing, Querying, and Reasoning*, Stuttgart 2018.
+
 https://neo4j.com/blog/rdf-triple-store-vs-labeled-property-graph-difference/
+
 https://dvcs.w3.org/hg/rdf/raw-file/tip/rdf-primer/Overview.html
 
 ### Datenbanken
@@ -215,6 +220,8 @@ Meier, Andreas / Kaufmann, Michael: *SQL & NoSQL Databases*, Stuttgart 2019.
 ### Anwendungsbeispiele
 
 Matschinegg et al.: *Daten neu verknoten - Die Verwendung einer Graphdatenbank für die Bilddatenbank REALonline*, http://webdoc.sub.gwdg.de/pub/mon/dariah-de/dwp-2019-31.pdf
+
 Wübbena, Thorsten: "Von Warburg zu Wikidata – Vernetzung und Interoperabilität kunsthistorischer Datenbanksysteme am Beispiel von ConedaKOR", in: Canan Hastik und Philipp Hegel (Hrsg.), *Bilddaten in den Digitalen Geisteswissenschaften*, Wiesbaden 2020, S. 133-149, DOI: 10.13173/9783447114608.133
+
 Oldman, Dominic / Tanase, Diana: "Reshaping the Knowledge Graph by Connecting Researchers, Data and Practices in ResearchSpace", in: Vrandečić D. et al. (Hrsg.) *The Semantic Web – ISWC 2018. ISWC 2018. Lecture Notes in Computer Science, Part 1*, Cham 2018. S. 325-340.
 
