@@ -1,0 +1,17 @@
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT ?person ?personLabel ?countryLabel ?dob ?placeofbirthLabel ?coord WHERE {
+  ?person wdt:P106 wd:Q36834;
+    wdt:P21 wd:Q6581072;     
+    wdt:P27 ?country.
+  OPTIONAL {?person wdt:P569 ?dob.}
+  OPTIONAL {?person wdt:P19 ?placeofbirth. 
+            ?placeofbirth wdt:P625 ?coord.}
+  
+          
+  FILTER (   YEAR(?dob) > 1800 && YEAR(?dob) < 1900  ).
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+}
