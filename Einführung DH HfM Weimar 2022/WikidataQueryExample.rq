@@ -1,0 +1,27 @@
+SELECT ?person ?personLabel ?countryLabel ?dob ?placeofbirthLabel ?coord 
+# Hier werden die Variablen festgelegt, welche ich im Ergebnis herausbekommen möchte
+WHERE {
+  ?person wdt:P106 wd:Q36834;
+  # eine Personenentität mit der Tätigkeit Komponist und ...
+  # die Kürzel wdt: und wd: sind Präfixe, welche definieren aus welchem Vokabular die dahinterliegenden Konzepte stammen
+  # also dass P106 bei wikidata das Prädikat "Tätigkeit" repräsentiert. Es gibt verschiedene Vokabulare und festlegungen, wodurch mit einem anderen Präfix
+  # P106 etwas ganz anderes Bedeuten könnte.
+    wdt:P21 wd:Q6581072;
+  # dem Geschlecht weiblich und ...
+    wdt:P27 ?country.
+  # der Staatsangehörigkeit?
+  OPTIONAL { ?person wdt:P569 ?dob. }
+  # Optional das Geburtsdatum der Person. Warum Optional? Damit wir trotzdem auch die Personen im Ergebnis behalten, 
+  # für welche kein Geburtsdatum bekannt ist.
+  OPTIONAL {
+    ?person wdt:P19 ?placeofbirth.
+    ?placeofbirth wdt:P625 ?coord.
+  }
+  # Optional der Geburtsort der Person und die Koordinaten des Geburtsortes
+  FILTER(((YEAR(?dob)) > 1800 ) && ((YEAR(?dob)) < 1900 ))
+  # Filter nur Geburtsdaten welche nach 1800 und vor 1900 liegen.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+  # Dieser Befehl ermöglicht es die kryptischen Wikidata-IDs (z.B. wd:Q4960641) in der Ergebnisliste in lesbare Labels 
+  # umzuwandeln (z. B. Helfrid Lambert). Hierfür muss der Variable für die ID (?person) eine Labelvariable (?personLabel) zur Seite gestellt werden.
+}
+#defaultView:Map
