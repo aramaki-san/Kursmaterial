@@ -1,0 +1,26 @@
+query BernsteinQuery {
+  lookup {
+    artist(mbid: "fa39bc82-9b27-4bbb-9425-d719a72e09ac") {
+      name
+      releases(first: 10) {
+        totalCount
+        pageInfo {startCursor endCursor}
+        nodes {
+          title
+          mbid
+          artists {
+            nodes {
+              name
+              tags {
+                nodes {
+                  name
+                }
+              }
+             
+            }
+          }
+        }
+      }
+    }
+  }
+}
